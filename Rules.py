@@ -1,12 +1,16 @@
 import tkinter as tk
 
-#Création de la classe qui permet d'afficher la page d'accueil
+#Création de la classe qui permet d'afficher les règles
 class Rules:
-    def __init__(self):
+    def __init__(self, homepage):
+        self.homepage_window = homepage
         #On créer la fenêtre
         self.rulesWindow = tk.Tk()
         self.rulesWindow.title('Règlement')
         self.rulesWindow.geometry("500x500")
+
+        #Ajouter un évenement lorsque l'on clique sur la croix pour fermer la page
+        self.rulesWindow.protocol("WM_DELETE_WINDOW", self.close)
 
         #On créer les composants de cette fenêtre
         self.lb_rulesTitle = tk.Label(self.rulesWindow, text="REGLEMENTS")
@@ -20,4 +24,6 @@ class Rules:
         self.rulesWindow.mainloop()
 
     def close(self):
-        self.window.destroy()
+        self.homepage_window.deiconify()
+        self.rulesWindow.destroy()
+        
