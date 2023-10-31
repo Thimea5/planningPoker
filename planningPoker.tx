@@ -1,0 +1,15 @@
+MERCI DE BIEN SUIVRE L'ORGANISATION DU PROJET
+
+
+
+index.py sert juste à ajouter les import et etc
+
+Surtout, bien nommer les variables : un label commencera toujours avec lb_, un bouton par bt_ etc (bien regarder le code précédent)
+Penser à bien donner des noms longs pour être sûr de ne pas avoir de doublons dans les variables, ce qui peut poser de gros problèmes 
+et gêner l'organisation du projet.
+
+
+
+
+On fera donc la version du Planning Poker jouable à plusieurs sur la même machine, et si on a du temps en plus,
+on pourra engager la suite.
