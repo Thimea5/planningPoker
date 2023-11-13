@@ -7,7 +7,7 @@ class Rules:
         #On créer la fenêtre
         self.rulesWindow = tk.Tk()
         self.rulesWindow.title('Règlement')
-        self.rulesWindow.geometry("500x500")
+        self.rulesWindow.state('zoomed')
 
         #Ajouter un évenement lorsque l'on clique sur la croix pour fermer la page
         self.rulesWindow.protocol("WM_DELETE_WINDOW", self.close)

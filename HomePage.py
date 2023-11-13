@@ -1,4 +1,5 @@
 import tkinter as tk
+from Game import Game
 from Rules import Rules
 
 # Création de la classe qui permet d'afficher la page d'accueil
@@ -7,7 +8,7 @@ class HomePage:
         # Paramètre de la fenêtre
         self.HomeWindow = tk.Tk()
         self.HomeWindow.title('Planning Poker')
-        self.HomeWindow.geometry("800x600")
+        self.HomeWindow.state('zoomed')
         self.HomeWindow.configure(bg="gray")
 
         # Composants de la fenêtre
@@ -24,12 +25,18 @@ class HomePage:
         self.HomeWindow.mainloop()
 
     def clic(self):
-        self.bt_startANewGame.config(text="bouton cliqué !")
+        self.newGame()
 
     def close(self):
         self.HomeWindow.withdraw()
 
+    #lors du clic sur le bouton règles
     def rules(self):
         self.close()
         rulesWindow = Rules(self.HomeWindow)
         rulesWindow.show()
+
+    def newGame(self):
+        self.close()
+        gameWindow = Game(self.HomeWindow)
+        gameWindow.show()
