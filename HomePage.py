@@ -8,7 +8,7 @@ class HomePage:
         self.HomeWindow = tk.Tk()
         self.HomeWindow.title('Planning Poker')
         self.HomeWindow.geometry("800x600")
-        self.HomeWindow.configure(bg="gray")
+        self.HomeWindow.configure(bg="black")
 
         # Composants de la fenêtre
         self.lb_title = tk.Label(self.HomeWindow, text="PLANNING POKER !")
