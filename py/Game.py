@@ -7,7 +7,7 @@ class Game:
         #On créer la fenêtre
         self.gameWindow = tk.Tk()
         self.gameWindow.title('PLANNING POKER')
-        self.gameWindow.state('zoomed')
+        #self.gameWindow.state('zoomed')
         self.gameWindow.configure(bg="gray")
 
 
