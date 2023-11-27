@@ -1,84 +1,61 @@
 //Classe qui gère les règles
 class RulesWidget {
-    constructor(mattersArray) {
-        this.matters = mattersArray;
-        this.containerMatterWidget = null;
-        this.headerMatter = null;
-        this.containerMatters = null;
-
+    constructor() {
         this.init();
     }
 
     init() {
         this.createWidget();
-        this.addEventListeners();
+        this.showRulesDifficulty();
     }
 
     createWidget() {
-        this.containerMatterWidget = document.createElement("div");
-        this.headerMatter = document.createElement("div");
-        this.containerMatters = document.createElement("div");
-        this.addMatterButton = document.createElement("div");
+        this.containerRulesWidget = document.createElement("div");
+        this.containerRules = document.createElement("div");
+        this.difficultyRules = document.createElement('div');
 
-        this.containerMatterWidget.classList.add("containerMatterWidget");
-        this.headerMatter.classList.add("headerMatter");
-        this.containerMatters.classList.add("containerMatters");
-        this.addMatterButton.classList.add("addMatter");
+        this.containerRules.innerHTML = "<h2>En quoi consiste le Planning Poker ?</h2><p>Le planning Poker est très utile pour planifier et estimer les difficultés de chaque taches a effectuer dans un projet.</p>";
 
-        this.addMatterButton.setAttribute('title','Ajouter une nouvelle matière');
-        this.addMatterButton.innerHTML = 'ajouter une matière';
+        this.difficultyChoice =  document.createElement("select");
+        this.difficultyChoice.add(new Option("Basique","basic")); //Deuxième paramètre = value
+        this.difficultyChoice.add(new Option("Intermediaire","medium"));
+        this.difficultyChoice.add(new Option("Difficile","hard"));
+        
+        this.difficultyChoice.addEventListener("change", () => this.showRulesDifficulty(this.difficultyChoice.options[this.difficultyChoice.selectedIndex].value));
 
-        this.headerMatter.innerHTML = "<h2 class='headerMatterTitle'>Mes cours</h2>";
+        //Personnalisation du suelect (le refaire en css c mieux)
+        this.difficultyChoice.style.height = "30px";
+        this.difficultyChoice.style.color = "white";
+        this.difficultyChoice.style.backgroundColor = "black";
+        this.difficultyChoice.style.border = "2px solid black";
+        this.difficultyChoice.style.borderRadius = "5px";
+        this.difficultyChoice.style.margin = "10px";
+        this.difficultyChoice.style.padding = "5px";
+        this.difficultyChoice.style.fontFamily = "Arial, sans-serif";
 
-        document.body.appendChild(this.containerMatterWidget);
-        this.containerMatterWidget.appendChild(this.headerMatter);
+        this.containerRulesWidget.classList.add("containerRulesWidget");
 
-        this.populateMatters();
-        this.containerMatterWidget.appendChild(this.containerMatters);
-        this.containerMatterWidget.appendChild(this.addMatterButton);
+
+        this.containerRulesWidget.appendChild(this.containerRules);
+        this.containerRulesWidget.appendChild(this.difficultyChoice)
+        this.containerRulesWidget.appendChild(this.difficultyRules)
+        document.body.appendChild(this.containerRulesWidget);
     }
 
-    //Compte le nombre de matière dans la bdd
-    populateMatters() {
-        for (let i = 0; i < this.matters.length; i++) {
-            let name = this.matters[i];
+    showRulesDifficulty(difficulty="basic"){ //Si difficulty=null, il prend la valeur par defaut basic
+        console.log(difficulty);
 
-            let aMatter = document.createElement("div");
-            aMatter.classList.add("aMatter");
-            this.containerMatters.appendChild(aMatter);
-
-            aMatter.innerHTML = "<h3>" + name + "</h3><a href='' class='matterLink'>accéder à ce cours</a>";
+        switch(difficulty){
+            case 'basic':
+                this.difficultyRules.innerHTML = '<h3>Mode basique</h3><p>Le mode de jeu basique est le plus simple. Pas de limite de temps ..</p>';
+            break;
+            case 'medium':
+                this.difficultyRules.innerHTML = '<h3>Mode Intermédiaire</h3><p>Le mode de jeu intermédiaire est le plus équilivré. Le temps est limité a  ..</p>';
+            break;
+            case 'hard':
+                this.difficultyRules.innerHTML = '<h3>Mode difficile</h3><p>Le mode de jeu difficile est le plus compliqué. Le temps est limité a  ..</p>';
+            break;
         }
-    }
-
-    //Liste des events
-    addEventListeners(){
-        let addMatter = document.querySelector(".addMatter").addEventListener('click', () => {
-            console.log("addMatter cliqué");
-            this.form();
-            /*
-            $.ajax({
-                url: '../functions.php', 
-                method: 'POST', // Ou get ?
-                data: {
-                    action: 'addMatter', // Un paramètre pour indiquer l'action à effectuer dans le fichier PHP
-                    name: name
-                },
-                success: function (reponse) {
-                    // Traitement de la réponse de la fonction PHP
-                    console.log(reponse);
-                },
-                error: function (erreur) {
-                    // En cas d'erreur lors de l'appel de la fonction PHP
-                    console.error(erreur);
-                }
-            });
-            */
-        });
-    }
-
-    form(){
-       //formulaire pour renseigner les informations de la nvlle matière
     }
 }
 

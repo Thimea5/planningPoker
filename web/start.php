@@ -1,10 +1,5 @@
-<?php 
-   $matters = getMatters();
-?>
-
-<h1 class="title">MySpace</h1> 
+<h1 class="title">Planning Poker</h1> 
 
 <script>
-    let matters = <?php echo json_encode($matters); ?> 
-    let myMatterWidget = new MatterWidget(matters);
+    let myRulesWidget = new RulesWidget();
 </script>
