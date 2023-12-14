@@ -1,4 +1,34 @@
+#startContainer {
+    display: flex;
+}
 .containerRulesWidget {
-    border : 2px solid black;
+    border: 2px solid black;
     width: 30vw;
+    padding: 10px;
+}
+
+.selectDifficulty, .selectNbPlayers {
+    height: 30px;
+    color: white;
+    background-color: black;
+    border: 2px solid black;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 5px;
+}
+
+/* GameWidget */
+.containerGameWidget {
+    border: 2px solid black;
+    width: 60vw;
+    padding: 10px;
+}
+
+.btPlay {
+    display: flex;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 6px 10px;
+    color: white;
+    background-color: black;
 }

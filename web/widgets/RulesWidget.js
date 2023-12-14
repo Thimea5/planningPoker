@@ -10,6 +10,7 @@ class RulesWidget {
     }
 
     createWidget() {
+        this.startContainer = document.querySelector('#startContainer');
         this.containerRulesWidget = document.createElement("div");
         this.containerRules = document.createElement("div");
         this.difficultyRules = document.createElement('div');
@@ -17,21 +18,12 @@ class RulesWidget {
         this.containerRules.innerHTML = "<h2>En quoi consiste le Planning Poker ?</h2><p>Le planning Poker est très utile pour planifier et estimer les difficultés de chaque taches a effectuer dans un projet.</p>";
 
         this.difficultyChoice =  document.createElement("select");
+        this.difficultyChoice.classList.add("selectDifficulty");
         this.difficultyChoice.add(new Option("Basique","basic")); //Deuxième paramètre = value
         this.difficultyChoice.add(new Option("Intermediaire","medium"));
         this.difficultyChoice.add(new Option("Difficile","hard"));
         
         this.difficultyChoice.addEventListener("change", () => this.showRulesDifficulty(this.difficultyChoice.options[this.difficultyChoice.selectedIndex].value));
-
-        //Personnalisation du suelect (le refaire en css c mieux)
-        this.difficultyChoice.style.height = "30px";
-        this.difficultyChoice.style.color = "white";
-        this.difficultyChoice.style.backgroundColor = "black";
-        this.difficultyChoice.style.border = "2px solid black";
-        this.difficultyChoice.style.borderRadius = "5px";
-        this.difficultyChoice.style.margin = "10px";
-        this.difficultyChoice.style.padding = "5px";
-        this.difficultyChoice.style.fontFamily = "Arial, sans-serif";
 
         this.containerRulesWidget.classList.add("containerRulesWidget");
 
@@ -39,7 +31,7 @@ class RulesWidget {
         this.containerRulesWidget.appendChild(this.containerRules);
         this.containerRulesWidget.appendChild(this.difficultyChoice)
         this.containerRulesWidget.appendChild(this.difficultyRules)
-        document.body.appendChild(this.containerRulesWidget);
+        this.startContainer.appendChild(this.containerRulesWidget);
     }
 
     showRulesDifficulty(difficulty="basic"){ //Si difficulty=null, il prend la valeur par defaut basic
