@@ -1,15 +1,6 @@
 //Classe qui gère les règles
 class RulesWidget {
     constructor() {
-        this.init();
-    }
-
-    init() {
-        this.createWidget();
-        this.showRulesDifficulty();
-    }
-
-    createWidget() {
         this.startContainer = document.querySelector('#startContainer');
         this.containerRulesWidget = document.createElement("div");
         this.containerRules = document.createElement("div");
@@ -32,7 +23,10 @@ class RulesWidget {
         this.containerRulesWidget.appendChild(this.difficultyChoice)
         this.containerRulesWidget.appendChild(this.difficultyRules)
         this.startContainer.appendChild(this.containerRulesWidget);
+        
+        this.showRulesDifficulty();
     }
+
 
     showRulesDifficulty(difficulty="basic"){ //Si difficulty=null, il prend la valeur par defaut basic
         console.log(difficulty);

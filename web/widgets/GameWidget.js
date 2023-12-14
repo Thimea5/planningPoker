@@ -1,14 +1,7 @@
+
 //Classe qui gère le lancement de la partie
 class GameWidget {
     constructor() {
-        this.init();
-    }
-
-    init() {
-        this.createWidget();
-    }
-
-    createWidget() {
         //Nombre de joueur
         this.startContainer = document.querySelector('#startContainer');
         this.containerGameWidget = document.createElement("div");
@@ -18,7 +11,11 @@ class GameWidget {
         this.difficultyChoice =  document.createElement("div");
         this.difficultyChoice.innerHTML = "<span>Choisir une difficulté : </span><select class='selectDifficulty'><option value='basic'>Basique</option><option value='medium'>Medium</option><option value='hard'>Difficile</option></select>";
         
-        this.difficultyChoice.addEventListener("change", () => this.showRulesDifficulty(this.difficultyChoice.options[this.difficultyChoice.selectedIndex].value));
+        let selectedDifficulty = document.querySelector(".selectDifficulty").selectedIndex = null ? "basic" : document.querySelector(".selectDifficulty").value;
+        this.difficultyChoice.addEventListener("change", (event) => {
+            selectedDifficulty = event.target.value;
+            console.log(selectedDifficulty);
+        });        
 
         this.btPlay = document.createElement("button");
         this.btPlay.classList.add("btPlay");
@@ -31,16 +28,13 @@ class GameWidget {
         this.startContainer.appendChild(this.containerGameWidget);
 
         this.selectNbPlayers = document.querySelector('.selectNbPlayers');
-        this.setNbPlayers(this.selectNbPlayers.value)
-        this.selectNbPlayers.addEventListener('change', () => this.setNbPlayers(this.selectNbPlayers.value));
-        
-        this.containerGameWidget.appendChild(this.btPlay)
+        this.setInputPlayers(this.selectNbPlayers.value)
+        this.selectNbPlayers.addEventListener('change', () => this.setInputPlayers(this.selectNbPlayers.value));
         this.btPlay.addEventListener('click', this.play.bind(this));
-
+        this.containerGameWidget.appendChild(this.btPlay);
     }
 
-
-    setNbPlayers(nbPlayers){
+    setInputPlayers(nbPlayers){
         //On supprime les anciens input
         this.removePlayerInputs();
 
@@ -61,8 +55,20 @@ class GameWidget {
     }
 
     play(){ //lancer la partie
+        let allPlayersNamed = true;
         const inputs = this.containerGameWidget.querySelectorAll('input');
         const playerNames = Array.from(inputs).map((input) => input.value);
-        console.log(playerNames);
+        for(let i=0; i<playerNames.length; i++){
+            if(playerNames[i] == "" || playerNames[i] == null){
+                console.log("Veuillez entrer un nom pour chaque joueur");
+                allPlayersNamed = false;
+            }
+        }
+        if (allPlayersNamed){
+            console.log("Tous les joueurs ont un nom, lancement de la partie");
+            const game = new Game(playerNames, this.selectedDifficulty);
+        }
+        //selectedDifficulty est nul
+        console.log(playerNames + " " + this.selectedDifficulty);
     }
 }
