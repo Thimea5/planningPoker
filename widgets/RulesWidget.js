@@ -10,9 +10,8 @@ class RulesWidget {
 
         this.difficultyChoice =  document.createElement("select");
         this.difficultyChoice.classList.add("selectDifficulty");
-        this.difficultyChoice.add(new Option("Basique","basic")); //Deuxième paramètre = value
-        this.difficultyChoice.add(new Option("Intermediaire","medium"));
-        this.difficultyChoice.add(new Option("Difficile","hard"));
+        this.difficultyChoice.add(new Option("Mode strict","strict")); //Deuxième paramètre = value
+        this.difficultyChoice.add(new Option("Mode moyenne","moyenne"));
         
         this.difficultyChoice.addEventListener("change", () => this.showRulesDifficulty(this.difficultyChoice.options[this.difficultyChoice.selectedIndex].value));
 
@@ -27,19 +26,27 @@ class RulesWidget {
         this.showRulesDifficulty();
     }
 
+     //Supprime l'objet
+     delete(){
+        while (this.containerRulesWidget.firstChild){
+            this.containerRulesWidget.removeChild(this.containerRulesWidget.firstChild);
+        }
 
-    showRulesDifficulty(difficulty="basic"){ //Si difficulty=null, il prend la valeur par defaut basic
+        delete this.gameWidget;
+        const containerRulesWidget = document.querySelector('.containerRulesWidget');
+        if (containerRulesWidget) {
+            containerRulesWidget.remove();
+        }
+    }
+
+    showRulesDifficulty(difficulty="strict"){ //Si difficulty=null, il prend la valeur par defaut basic
         console.log(difficulty);
-
         switch(difficulty){
-            case 'basic':
-                this.difficultyRules.innerHTML = '<h3>Mode basique</h3><p>Le mode de jeu basique est le plus simple. Pas de limite de temps ..</p>';
+            case 'strict':
+                this.difficultyRules.innerHTML = '<h3>Mode strict</h3><p>Pour le mode de jeu strict, les joueurs votent jusqu\'à ce que l\'unanimité soit acquise</p>';
             break;
-            case 'medium':
-                this.difficultyRules.innerHTML = '<h3>Mode Intermédiaire</h3><p>Le mode de jeu intermédiaire est le plus équilivré. Le temps est limité a  ..</p>';
-            break;
-            case 'hard':
-                this.difficultyRules.innerHTML = '<h3>Mode difficile</h3><p>Le mode de jeu difficile est le plus compliqué. Le temps est limité a  ..</p>';
+            case 'moyenne':
+                this.difficultyRules.innerHTML = '<h3>Mode moyenne</h3><p>Pour le mode moyenne, le premier tour de chaque tâche se joue quand même sur l\'unanimité. ce n\'est qu\'à partir des tours suivants que l\'on utilise la moyenne. Ce choix permet d\'avoir au moins un temps de discussion si les joueurs ne sont pas d\'accord en premier lieu</p>';
             break;
         }
     }

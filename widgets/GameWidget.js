@@ -6,21 +6,24 @@ class GameWidget {
         this.rulesWidget = rulesWidget;
         this.startContainer = document.querySelector('#startContainer');
         this.containerGameWidget = document.createElement("div");
-        this.containerPlayers =  document.createElement("div");
-        this.containerPlayers.innerHTML = "<span>Choisir le nombre de joueur : </span><select class='selectNbPlayers'><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>";
+
+        this.containerPlayers = Object.assign(document.createElement("div"), {
+            innerHTML: "<span>Choisir le nombre de joueur : </span><select class='selectNbPlayers'><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>"
+        });
 
         this.difficultyChoice =  document.createElement("div");
-        this.difficultyChoice.innerHTML = "<span>Choisir une difficulté : </span><select class='selectDifficulty'><option value='basic'>Basique</option><option value='medium'>Medium</option><option value='hard'>Difficile</option></select>";
-        
-        let selectedDifficulty = document.querySelector(".selectDifficulty").selectedIndex = null ? "basic" : document.querySelector(".selectDifficulty").value;
+        this.difficultyChoice.innerHTML = "<span>Choisir une difficulté : </span><select class='selectDifficulty'><option value='strict'>Strict</option><option value='medium'>Medium</option></select>";
+        let selectedDifficulty = document.querySelector(".selectDifficulty").selectedIndex = null ? "strict" : document.querySelector(".selectDifficulty").value;
         this.difficultyChoice.addEventListener("change", (event) => {
             selectedDifficulty = event.target.value;
             console.log(selectedDifficulty);
         });        
 
-        this.btPlay = document.createElement("button");
-        this.btPlay.classList.add("btPlay");
-        this.btPlay.innerHTML = "Jouer";
+        this.btPlay = Object.assign(document.createElement("button"), {
+            className: "btPlay",
+            innerHTML: "Jouer"
+        });
+    
         this.containerGameWidget.innerHTML = "<h2>Lancer une partie</h2>";
         this.containerGameWidget.classList.add("containerGameWidget");
 
@@ -35,6 +38,19 @@ class GameWidget {
             this.play(selectedDifficulty);
         });
         this.containerGameWidget.appendChild(this.btPlay);
+    }
+    
+    //Supprime l'objet
+    delete(){
+        while (this.containerGameWidget.firstChild){
+            this.containerGameWidget.removeChild(this.containerGameWidget.firstChild);
+        }
+
+        delete this.gameWidget;
+        const gameWidgetElement = document.querySelector('.containerGameWidget');
+        if (gameWidgetElement) {
+            gameWidgetElement.remove();
+        }
     }
 
     setInputPlayers(nbPlayers){
@@ -70,6 +86,8 @@ class GameWidget {
         if (allPlayersNamed){
             console.log("Tous les joueurs ont un nom, lancement de la partie");
             const game = new Game(playerNames, selectedDifficulty, this.rulesWidget, this);
+            this.delete();
+            this.rulesWidget.delete();
             game.start();
         }
     }

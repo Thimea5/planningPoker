@@ -25,10 +25,48 @@
 }
 
 .btPlay {
-    display: flex;
+    display: block;
     border: 2px solid black;
     border-radius: 20px;
     padding: 6px 10px;
     color: white;
     background-color: black;
 }
+
+
+/* Game */
+
+#game {
+    display: none;
+}
+
+#modalFeatures{
+    display: none;
+    position:absolute;
+    background-color: aliceblue;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 100;
+}
+
+.closeBt{
+    height: 20px;
+}
+
+.simpleBt{
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 6px 10px;
+    color: white;
+    background-color: black;
+}
+
+#startBt {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
