@@ -1,8 +1,9 @@
 
 //Classe qui gère le lancement de la partie
 class GameWidget {
-    constructor() {
+    constructor(rulesWidget) {
         //Nombre de joueur
+        this.rulesWidget = rulesWidget;
         this.startContainer = document.querySelector('#startContainer');
         this.containerGameWidget = document.createElement("div");
         this.containerPlayers =  document.createElement("div");
@@ -30,7 +31,9 @@ class GameWidget {
         this.selectNbPlayers = document.querySelector('.selectNbPlayers');
         this.setInputPlayers(this.selectNbPlayers.value)
         this.selectNbPlayers.addEventListener('change', () => this.setInputPlayers(this.selectNbPlayers.value));
-        this.btPlay.addEventListener('click', this.play.bind(this));
+        this.btPlay.addEventListener('click', () => {
+            this.play(selectedDifficulty);
+        });
         this.containerGameWidget.appendChild(this.btPlay);
     }
 
@@ -54,7 +57,7 @@ class GameWidget {
         });
     }
 
-    play(){ //lancer la partie
+    play(selectedDifficulty){ //lancer la partie
         let allPlayersNamed = true;
         const inputs = this.containerGameWidget.querySelectorAll('input');
         const playerNames = Array.from(inputs).map((input) => input.value);
@@ -66,9 +69,8 @@ class GameWidget {
         }
         if (allPlayersNamed){
             console.log("Tous les joueurs ont un nom, lancement de la partie");
-            const game = new Game(playerNames, this.selectedDifficulty);
+            const game = new Game(playerNames, selectedDifficulty, this.rulesWidget, this);
+            game.start();
         }
-        //selectedDifficulty est nul
-        console.log(playerNames + " " + this.selectedDifficulty);
     }
 }

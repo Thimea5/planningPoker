@@ -3,6 +3,6 @@
 <div id="startContainer">
 <script>
     let myRulesWidget = new RulesWidget();
-    let myGameWidget = new GameWidget();
+    let myGameWidget = new GameWidget(myRulesWidget);
 </script>
 </div>
