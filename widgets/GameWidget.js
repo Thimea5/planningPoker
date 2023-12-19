@@ -11,6 +11,7 @@ class GameWidget {
             innerHTML: "<span>Choisir le nombre de joueur : </span><select class='selectNbPlayers'><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>"
         });
 
+        this.containerGameWidget.classList.add("block");
         this.difficultyChoice =  document.createElement("div");
         this.difficultyChoice.innerHTML = "<span>Choisir une difficulté : </span><select class='selectDifficulty'><option value='strict'>Strict</option><option value='medium'>Medium</option></select>";
         let selectedDifficulty = document.querySelector(".selectDifficulty").selectedIndex = null ? "strict" : document.querySelector(".selectDifficulty").value;

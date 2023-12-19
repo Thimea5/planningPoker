@@ -3,8 +3,9 @@
 }
 .containerRulesWidget {
     border: 2px solid black;
-    width: 30vw;
-    padding: 10px;
+    padding: 20px;
+    background-color: white;
+    margin: 10px;
 }
 
 .selectDifficulty, .selectNbPlayers {
@@ -17,11 +18,28 @@
     padding: 5px;
 }
 
+.block{
+    background: white;
+    margin: 10px;
+    padding: 20px;
+    width: 33vw;
+    min-height: fit-content;
+}
+
+.title{
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    font-size: 50px;
+    margin: 20px;
+}
+
 /* GameWidget */
 .containerGameWidget {
     border: 2px solid black;
-    width: 60vw;
-    padding: 10px;
+    padding: 20px;
+    background-color: white;
+    margin: 10px;
 }
 
 .btPlay {
@@ -50,16 +68,22 @@
     z-index: 100;
 }
 
-.closeBt{
+.closeBt {
     height: 20px;
 }
 
-.simpleBt{
+.simpleBt {
     border: 2px solid black;
     border-radius: 20px;
     padding: 6px 10px;
     color: white;
     background-color: black;
+}
+
+#projectName {
+    color:black;
+    font-size: 30px;
+    text-decoration: underline;
 }
 
 #startBt {
@@ -70,3 +94,15 @@
     transform: translate(-50%, -50%);
 }
 
+.play{
+    background: white;
+    margin: 10px;
+    padding: 20px;
+    border: 3px solid black;
+    border-radius: 10px;
+}
+
+#gameParameters{
+    border: 2px solid black;
+    padding: 20px;
+}

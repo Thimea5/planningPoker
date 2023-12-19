@@ -2,6 +2,7 @@ class Game {
     constructor(players, difficulty, rulesWidget, gameWidget) {
         this.startContainer = document.querySelector('#startContainer');
         this.gameContainer = document.querySelector('#game');
+        this.searchContainer = document.querySelector('#searchGame');
         this.rulesWidget = rulesWidget;
         this.gameWidget = gameWidget;
         this.players = players;
@@ -20,7 +21,9 @@ class Game {
     // Affichage et gestion des fonctions
     start() {
         this.gameContainer.style.display = 'block';
-        document.querySelector('#difficulty').innerHTML = 'Mode ' + this.difficulty;
+        this.searchContainer.style.display = 'none';
+        this.startContainer.classList.add('play');
+        document.querySelector('#difficulty').innerHTML = 'La partie est en mode <strong>' + this.difficulty + '</strong>';
         this.projectName.addEventListener('dblclick', () => this.renameProject());
         this.featureBt.addEventListener('click', () => this.showModalFeatures());
         this.closeFeature.addEventListener('click', () => this.hideModalFeatures());

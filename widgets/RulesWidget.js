@@ -5,6 +5,7 @@ class RulesWidget {
         this.containerRulesWidget = document.createElement("div");
         this.containerRules = document.createElement("div");
         this.difficultyRules = document.createElement('div');
+        this.containerRulesWidget.classList.add("block");
 
         this.containerRules.innerHTML = "<h2>En quoi consiste le Planning Poker ?</h2><p>Le planning Poker est très utile pour planifier et estimer les difficultés de chaque taches a effectuer dans un projet.</p>";
 
