@@ -13,6 +13,7 @@ class Game {
         this.startBt = document.querySelector('#startBt');
         this.infoStart = document.querySelector('#infoStart');
         this.showPlayers = document.querySelector('#playersList'); 
+        this.divPlayers = document.querySelector('#players');
     }
 
     // Affichage et gestion des fonctions
@@ -23,13 +24,26 @@ class Game {
         document.querySelector('#difficulty').innerHTML = 'La partie est en mode <strong>' + this.difficulty + '</strong>. <span id="helpRules">Voir les règles.</span>';
         this.projectName.addEventListener('dblclick', () => this.renameProject());
         this.initFeaturesList();
-        this.startBt.addEventListener('click', () => this.play());
         for (let i = 0; i < this.players.length; i++) {
             let playerItem = document.createElement('li');
             playerItem.textContent = this.players[i];
             this.showPlayers.appendChild(playerItem);
         }
-        
+
+        for (let i = 0; i < this.players.length; i++) {
+            let playerDiv = document.createElement('div');
+            let playerName = document.createElement('p');
+            let playerImg = document.createElement('img');
+
+            playerName.textContent = 'Choix de ' + this.players[i];
+            playerDiv.id = this.players[i];
+
+            playerDiv.appendChild(playerName);
+            playerDiv.appendChild(playerImg);
+            this.divPlayers.appendChild(playerDiv);
+        }
+
+        this.startBt.addEventListener('click', () => this.play(this.players, this.features, this.divPlayers));
     }
 
     renameProject() {
@@ -53,6 +67,7 @@ class Game {
         }
         this.newFeature = document.createElement('li');
         this.newFeature.textContent = "Ajouter une fonctionnalité";
+        this.newFeature.classList.add('addFeature');
         this.featuresList.appendChild(this.newFeature);
         this.newFeature.addEventListener('click', () => this.addFeature());
         console.log(this.features);
@@ -71,76 +86,82 @@ class Game {
         this.initFeaturesList();
     }
 
-
-    // Fonction qui gère le jeu
-    // Fonction qui gère le jeu
-play() {
-    //variables pour cette fonction
-    this.board = document.querySelector('#boardGame');
-    this.actualPlayer = document.querySelector('#actualPlayer');
-    this.cards = document.querySelector('#cards');
-    this.actualFeature = document.querySelector('#actualFeature');
-    this.res = {};
-    this.cardsArray = [];
-
-    //afficher/masquer les outils nécessaires à la partie
-    this.board.style.display = 'block';
-    this.cards.style.display = 'flex';
-    this.startBt.style.display = 'none';
-
-    for (let i = 0; i < this.cards.children.length; i++) {
-        // Stocker chaque carte dans le tableau
-       this.cardsArray.push(this.cards.children[i]);
+    initPlayersChoice(player, src) {    
+        let divPlayer = document.querySelector('#' + player);
+        let imgPlayer = divPlayer.querySelector('img');
+        imgPlayer.src = src;
     }
 
-    // Initialisation de l'objet pour chaque joueur
-    for (let i = 0; i < this.players.length; i++) {
-        this.res[this.players[i]] = {}; // Initialisation de l'objet pour chaque joueur
+    resetPlayersChoice() {
+        let divPlayers = document.querySelectorAll('#players div');
+        divPlayers.forEach(div => {
+            let img = div.querySelector('img');
+            img.src = "";
+        });
     }
 
-    //Chaque fonction est jouée par chaque joueur
-    for (let j = 0; j < this.features.length; j++) {
-        this.actualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.features[j];
-
-        for (let i = 0; i < this.players.length; i++) {
-            //on stocke le joueur actuel
-            this.actualPlayer.innerHTML = `Au tour de ${this.players[i]}`;
-
-            while (this.res[this.players[i]][this.actualFeature] === null || this.res[this.players[i]][this.actualFeature] === undefined) {
-                //Ecouteur d'événement pour stocker le résultat de chaque joueur
-                for (let k = 0; k < this.cardsArray.length; k++) {
-                    this.cardsArray[k].addEventListener('click', (event) => {
-                        this.res[this.players[i]][this.actualFeature] = event.target.id;
-                        console.log(`${this.players[i]} a joué la carte ${this.res[this.players[i]][this.actualFeature]} pour la fonctionnalité ${this.actualFeature}`);
-                    });
+    // Fonction asynchrone qui gère le jeu
+    async play(players, features, divPlayers) {
+        // variables pour cette fonction
+        this.board = document.querySelector('#boardGame');
+        this.actualPlayer = document.querySelector('#actualPlayer');
+        this.cards = document.querySelector('#cards');
+        this.actualFeature = document.querySelector('#actualFeature');
+        let cardsArray = Array.from(this.cards.children);
+        let res = {};
+        let imgSrc = "";
+    
+        this.board.style.display = 'block';
+        this.cards.style.display = 'flex';
+        this.startBt.style.display = 'none';
+        divPlayers.style.display = 'flex';
+    
+        // Initialisation de l'objet res pour chaque joueur
+        players.forEach(player => {
+            res[player] = {};
+        });
+    
+        for (let j = 0; j < features.length; j++) {
+            this.actualFeature.innerHTML = 'Fonctionnalité actuelle : ' + features[j];
+            console.log('Fonctionnalité actuelle : ' + features[j]);
+            this.resetPlayersChoice();
+    
+            for (let i = 0; i < players.length; i++) {
+                if (
+                    res[players[i]][features[j]] === undefined ||
+                    res[players[i]][features[j]] === null ||
+                    res[players[i]][features[j]] === ""
+                ) {
+                    let currentPlayer = players[i];
+                    this.actualPlayer.innerHTML = `A ton tour <strong>${currentPlayer}</strong> ! `;
+                    console.log(`Au tour de ${currentPlayer} donc ${players[i]}`);
+    
+                    // Créer une Promise pour attendre le clic sur une carte
+                    const waitForCardClick = () => {
+                        return new Promise(resolve => {
+                            // Fonction de gestionnaire d'événements pour une carte spécifique
+                            let clickHandler = (event) => {
+                                res[players[i]][features[j]] = event.currentTarget.id;
+                                imgSrc = event.currentTarget.src;
+                                console.log(`${players[i]} a joué la carte ${event.currentTarget.id} pour la fonctionnalité ${features[j]}`);
+                                resolve(); // Résoudre la Promise une fois que le clic a eu lieu
+                            };
+    
+                            // Ajouter un seul écouteur d'événements à chaque carte
+                            cardsArray.forEach(card => {
+                                card.addEventListener('click', clickHandler);
+                            });
+                        });
+                    };
+    
+                    // Attendre que le joueur clique sur une carte
+                    await waitForCardClick();
                 }
+                this.initPlayersChoice(players[i], imgSrc);
             }
         }
-        /*
-
-        this.res = {};
-        for (let i = 0; i < this.players.length; i++) {
-            this.res[this.players[i]] = {}; // Initialisation de l'objet pour chaque joueur
-        }
-
-        for (let j = 0; j < this.features.length; j++) {
-            this.actualFeature = this.features[j];
-            this.showActualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.actualFeature;
-
-            for (let i = 0; i < this.players.length; i++) {
-                while (this.res[this.players[i]][this.actualFeature] === null || this.res[this.players[i]][this.actualFeature] === undefined) {
-                    //on stock le joueur actuel
-                    actualPlayer = this.players[i];
-                    this.actualPlayer = actualPlayer;
-                    console.log(`Au tour de ${this.players[i]}`);
-                    let value = prompt(`Quelle carte souhaitez-vous jouer, ${this.players[i]} ?`);
-                    this.res[this.players[i]][this.actualFeature] = value;
-                }
-                console.log(`${this.players[i]} a joué la carte ${this.res[this.players[i]][this.actualFeature]} pour la fonctionnalité ${this.actualFeature}`);
-            }
-        }
-
-        */
-       }
     }
+    
+
+    
 }

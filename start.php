@@ -24,8 +24,9 @@
         <div id='boardGame'>
             <button id="startBt" class='simpleBt'>Commencer à jouer</button>
             <span id='infoStart'>Pour commencer, ajoutez au moins une Fonctionnalité</span>
-            <span id='actualPlayer'></span>
-            <span id="actualFeature"></span>
+            <div id="actualFeature"></div>
+            <div id="players"></div>
+            <div id='actualPlayer'></div>
             <div id="cards">
                 <img id="card0" class="card" src="./img/cartes_0.svg" alt="0">
                 <img id="card1" class="card" src="./img/cartes_1.svg" alt="1">
