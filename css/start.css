@@ -56,16 +56,16 @@
 
 #game {
     display: none;
+    position: relative;
+    width: 100vw;
 }
 
-#modalFeatures{
-    display: none;
-    position:absolute;
-    background-color: aliceblue;
-    border: 2px solid black;
-    border-radius: 10px;
-    padding: 20px;
-    z-index: 100;
+#boardGame {
+    display: flex;
+    width: 100%;
+    border: 2px solid blue;
+    align-items: center;
+    justify-content: center;
 }
 
 .closeBt {
@@ -80,6 +80,11 @@
     background-color: black;
 }
 
+#helpRules{
+    text-decoration: underline;
+    font-style: italic;
+}
+
 #projectName {
     color:black;
     font-size: 30px;
@@ -88,10 +93,10 @@
 
 #startBt {
     display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+}
+
+#infoStart {
+    display: block;
 }
 
 .play{
@@ -105,4 +110,14 @@
 #gameParameters{
     border: 2px solid black;
     padding: 20px;
+}
+
+
+/* Cartes */
+
+#cards {
+   display: none;
+}
+.card {
+    height: 100px;
 }

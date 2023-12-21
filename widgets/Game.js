@@ -10,24 +10,25 @@ class Game {
         this.projectName = document.querySelector('#projectName');
         this.features = [];
         this.checkedFeatures = {};
-        this.featureBt = document.querySelector('#featuresBt');
-        this.closeFeature = document.querySelector('#closeFeatures');
         this.startBt = document.querySelector('#startBt');
-        this.res = {};
-        this.actualFeature = '';
-        this.showActualFeature = document.querySelector('#actualFeature'); // Ajout de cette ligne
+        this.infoStart = document.querySelector('#infoStart');
+        this.showPlayers = document.querySelector('#playersList'); 
     }
 
     // Affichage et gestion des fonctions
     start() {
-        this.gameContainer.style.display = 'block';
+        this.gameContainer.style.display = 'flex';
         this.searchContainer.style.display = 'none';
         this.startContainer.classList.add('play');
-        document.querySelector('#difficulty').innerHTML = 'La partie est en mode <strong>' + this.difficulty + '</strong>';
+        document.querySelector('#difficulty').innerHTML = 'La partie est en mode <strong>' + this.difficulty + '</strong>. <span id="helpRules">Voir les règles.</span>';
         this.projectName.addEventListener('dblclick', () => this.renameProject());
-        this.featureBt.addEventListener('click', () => this.showModalFeatures());
-        this.closeFeature.addEventListener('click', () => this.hideModalFeatures());
+        this.initFeaturesList();
         this.startBt.addEventListener('click', () => this.play());
+        for (let i = 0; i < this.players.length; i++) {
+            let playerItem = document.createElement('li');
+            playerItem.textContent = this.players[i];
+            this.showPlayers.appendChild(playerItem);
+        }
         
     }
 
@@ -39,6 +40,7 @@ class Game {
     initFeaturesList() {
         if (this.features.length !== 0) {
             this.startBt.style.display = 'block';
+            this.infoStart.style.display = 'none';
         }
         this.featuresList = document.querySelector("#featuresList");
         while (this.featuresList.firstChild) {
@@ -49,7 +51,6 @@ class Game {
             this.featureItem.textContent = this.features[i];
             this.featuresList.appendChild(this.featureItem);
         }
-
         this.newFeature = document.createElement('li');
         this.newFeature.textContent = "Ajouter une fonctionnalité";
         this.featuresList.appendChild(this.newFeature);
@@ -70,21 +71,53 @@ class Game {
         this.initFeaturesList();
     }
 
-    // Afficher les paramètres des features
-    showModalFeatures() {
-        let modale = document.querySelector('#modalFeatures');
-        this.initFeaturesList();
-        modale.style.display = "block";
-    }
-
-    // Cacher les features
-    hideModalFeatures() {
-        let modale = document.querySelector('#modalFeatures');
-        modale.style.display = "none";
-    }
 
     // Fonction qui gère le jeu
-    play() {
+    // Fonction qui gère le jeu
+play() {
+    //variables pour cette fonction
+    this.board = document.querySelector('#boardGame');
+    this.actualPlayer = document.querySelector('#actualPlayer');
+    this.cards = document.querySelector('#cards');
+    this.actualFeature = document.querySelector('#actualFeature');
+    this.res = {};
+    this.cardsArray = [];
+
+    //afficher/masquer les outils nécessaires à la partie
+    this.board.style.display = 'block';
+    this.cards.style.display = 'flex';
+    this.startBt.style.display = 'none';
+
+    for (let i = 0; i < this.cards.children.length; i++) {
+        // Stocker chaque carte dans le tableau
+       this.cardsArray.push(this.cards.children[i]);
+    }
+
+    // Initialisation de l'objet pour chaque joueur
+    for (let i = 0; i < this.players.length; i++) {
+        this.res[this.players[i]] = {}; // Initialisation de l'objet pour chaque joueur
+    }
+
+    //Chaque fonction est jouée par chaque joueur
+    for (let j = 0; j < this.features.length; j++) {
+        this.actualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.features[j];
+
+        for (let i = 0; i < this.players.length; i++) {
+            //on stocke le joueur actuel
+            this.actualPlayer.innerHTML = `Au tour de ${this.players[i]}`;
+
+            while (this.res[this.players[i]][this.actualFeature] === null || this.res[this.players[i]][this.actualFeature] === undefined) {
+                //Ecouteur d'événement pour stocker le résultat de chaque joueur
+                for (let k = 0; k < this.cardsArray.length; k++) {
+                    this.cardsArray[k].addEventListener('click', (event) => {
+                        this.res[this.players[i]][this.actualFeature] = event.target.id;
+                        console.log(`${this.players[i]} a joué la carte ${this.res[this.players[i]][this.actualFeature]} pour la fonctionnalité ${this.actualFeature}`);
+                    });
+                }
+            }
+        }
+        /*
+
         this.res = {};
         for (let i = 0; i < this.players.length; i++) {
             this.res[this.players[i]] = {}; // Initialisation de l'objet pour chaque joueur
@@ -96,6 +129,9 @@ class Game {
 
             for (let i = 0; i < this.players.length; i++) {
                 while (this.res[this.players[i]][this.actualFeature] === null || this.res[this.players[i]][this.actualFeature] === undefined) {
+                    //on stock le joueur actuel
+                    actualPlayer = this.players[i];
+                    this.actualPlayer = actualPlayer;
                     console.log(`Au tour de ${this.players[i]}`);
                     let value = prompt(`Quelle carte souhaitez-vous jouer, ${this.players[i]} ?`);
                     this.res[this.players[i]][this.actualFeature] = value;
@@ -103,5 +139,8 @@ class Game {
                 console.log(`${this.players[i]} a joué la carte ${this.res[this.players[i]][this.actualFeature]} pour la fonctionnalité ${this.actualFeature}`);
             }
         }
+
+        */
+       }
     }
 }
