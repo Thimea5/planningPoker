@@ -41,7 +41,6 @@ class RulesWidget {
     }
 
     showRulesDifficulty(difficulty="strict"){ //Si difficulty=null, il prend la valeur par defaut basic
-        console.log(difficulty);
         switch(difficulty){
             case 'strict':
                 this.difficultyRules.innerHTML = '<h3>Mode strict</h3><p>Pour le mode de jeu strict, les joueurs votent jusqu\'à ce que l\'unanimité soit acquise</p>';

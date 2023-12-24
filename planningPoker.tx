@@ -18,7 +18,8 @@ on pourra engager la suite.
 Ok      - Nombre de joueurs + pseudos
 Ok      - Règles planning poker (strict et moyenne)
 Ok      - Renommer le projet
-- Entrer une liste de fonctionnalité du backlog (pour le projet) en JSON
+Ok      - Entrer une liste de fonctionnalité du backlog (pour le projet) 
 - Quand tout le backlog (liste de fonctionnalité est valide) on enregistre le res pour chaque fonct en JSON dans un fichier
 - Si tous les joueurs ont mis la carte café =  enregistremebt de la partie en cours pour pouvoir la reprnendre (possibilité de la charger via le menu)
 - 3 patterns design
+- AJOUTER SAUVEGARDE EN JSON

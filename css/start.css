@@ -62,7 +62,7 @@
 /* Game */
 
 #players {
-    margin: 10px;
+    margin: 50px 10px;
     position: relative;
     text-align: center;
     display: none;
@@ -188,6 +188,7 @@
     display: none;
     width: -webkit-fill-available;
     margin: 10px;
+    overflow: scroll;
 }
 
 .card {

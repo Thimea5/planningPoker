@@ -9,11 +9,21 @@ class Game {
         this.difficulty = difficulty;
         this.projectName = document.querySelector('#projectName');
         this.features = [];
-        this.checkedFeatures = {};
         this.startBt = document.querySelector('#startBt');
         this.infoStart = document.querySelector('#infoStart');
         this.showPlayers = document.querySelector('#playersList'); 
         this.divPlayers = document.querySelector('#players');
+        this.res = {};
+        this.board = document.querySelector('#boardGame');
+        this.actualPlayer = document.querySelector('#actualPlayer');
+        this.cards = document.querySelector('#cards');
+        this.divActualFeature = document.querySelector('#actualFeature');
+        this.actualFeature = "";
+        this.checkedFeatures = [];
+        this.imgSrc = "";
+        this.currentPlayer = "";
+        this.divPlayer = document.querySelectorAll('#players div');
+
     }
 
     // Affichage et gestion des fonctions
@@ -43,7 +53,74 @@ class Game {
             this.divPlayers.appendChild(playerDiv);
         }
 
-        this.startBt.addEventListener('click', () => this.play(this.players, this.features, this.divPlayers));
+        //Démarrer la partie lors du clic sur start
+        this.startBt.addEventListener('click', () => this.play());
+    }
+
+    // Fonction pour créer une Promise qui attend le clic sur une carte
+    waitForCardClick() {
+        this.cardsArray = Array.from(this.cards.children);
+        return new Promise(resolve => {
+            // Fonction de gestionnaire d'événements pour une carte spécifique
+            this.clickHandler = (event) => {
+                this.res[this.currentPlayer][this.actualFeature] = event.currentTarget.id;
+                this.imgSrc = event.currentTarget.src;
+                resolve(); // Résoudre la Promise une fois que le clic a eu lieu
+            };
+    
+            // Ajouter un seul écouteur d'événements à chaque carte
+            this.cardsArray.forEach(card => {
+                card.addEventListener('click', this.clickHandler, { once: true });
+            });
+        });
+    }
+
+    // Fonction asynchrone qui gère le tour de chaque joueur
+    async playerRound() {
+        this.actualPlayer.innerHTML = `A ton tour <strong>${this.currentPlayer}</strong> ! `;
+        // Attendre que le joueur clique sur une carte
+        await this.waitForCardClick();
+    }
+
+    async play() {
+        this.board.style.display = 'block';
+        this.cards.style.display = 'flex';
+        this.startBt.style.display = 'none';
+        this.divPlayers.style.display = 'flex';
+    
+        for (let j = 0; j < this.features.length; j++) {
+            this.actualFeature = this.features[j];
+            this.divActualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.actualFeature;
+            this.resetPlayersChoice();
+    
+            await this.playForFeature();
+        }
+    
+        // Après la fin de toutes les fonctionnalités, vous pouvez afficher les résultats ou effectuer d'autres opérations ici.
+        console.log(this.res);
+      }
+
+    async playForFeature() {
+        for (let i = 0; i < this.players.length; i++) {
+            this.currentPlayer = this.players[i];
+        
+            // Vérifier si this.res[this.currentPlayer] est défini
+            if (!this.res[this.currentPlayer]) {
+            this.res[this.currentPlayer] = {};
+            }
+        
+            // Vérifier si this.res[this.currentPlayer][this.actualFeature] est défini
+            if (
+            this.res[this.currentPlayer][this.actualFeature] === undefined ||
+            this.res[this.currentPlayer][this.actualFeature] === null ||
+            this.res[this.currentPlayer][this.actualFeature] === ""
+            ) {
+            await this.playerRound();
+            console.log(this.res);
+            }
+        
+            this.initPlayersChoice();
+        }
     }
 
     renameProject() {
@@ -70,7 +147,6 @@ class Game {
         this.newFeature.classList.add('addFeature');
         this.featuresList.appendChild(this.newFeature);
         this.newFeature.addEventListener('click', () => this.addFeature());
-        console.log(this.features);
     }
 
     addFeature() {
@@ -82,86 +158,35 @@ class Game {
             }
         }
         this.features.push(newFeature);
-        this.checkedFeatures[newFeature] = false;
         this.initFeaturesList();
     }
 
-    initPlayersChoice(player, src) {    
-        let divPlayer = document.querySelector('#' + player);
-        let imgPlayer = divPlayer.querySelector('img');
-        imgPlayer.src = src;
+    initPlayersChoice() {    
+        let divThisPlayer = document.querySelector('#' + this.currentPlayer);
+        let imgThisPlayer = divThisPlayer.querySelector('img');
+        imgThisPlayer.src = this.imgSrc;
     }
 
     resetPlayersChoice() {
-        let divPlayers = document.querySelectorAll('#players div');
-        divPlayers.forEach(div => {
+        console.log('on entre bien dans resetPlayersChoice');
+        this.divPlayer.forEach(div => {
             let img = div.querySelector('img');
             img.src = "";
         });
     }
 
-    // Fonction asynchrone qui gère le jeu
-    async play(players, features, divPlayers) {
-        // variables pour cette fonction
-        this.board = document.querySelector('#boardGame');
-        this.actualPlayer = document.querySelector('#actualPlayer');
-        this.cards = document.querySelector('#cards');
-        this.actualFeature = document.querySelector('#actualFeature');
-        let cardsArray = Array.from(this.cards.children);
-        let res = {};
-        let imgSrc = "";
-    
-        this.board.style.display = 'block';
-        this.cards.style.display = 'flex';
-        this.startBt.style.display = 'none';
-        divPlayers.style.display = 'flex';
-    
-        // Initialisation de l'objet res pour chaque joueur
-        players.forEach(player => {
-            res[player] = {};
-        });
-    
-        for (let j = 0; j < features.length; j++) {
-            this.actualFeature.innerHTML = 'Fonctionnalité actuelle : ' + features[j];
-            console.log('Fonctionnalité actuelle : ' + features[j]);
-            this.resetPlayersChoice();
-    
-            for (let i = 0; i < players.length; i++) {
-                if (
-                    res[players[i]][features[j]] === undefined ||
-                    res[players[i]][features[j]] === null ||
-                    res[players[i]][features[j]] === ""
-                ) {
-                    let currentPlayer = players[i];
-                    this.actualPlayer.innerHTML = `A ton tour <strong>${currentPlayer}</strong> ! `;
-                    console.log(`Au tour de ${currentPlayer} donc ${players[i]}`);
-    
-                    // Créer une Promise pour attendre le clic sur une carte
-                    const waitForCardClick = () => {
-                        return new Promise(resolve => {
-                            // Fonction de gestionnaire d'événements pour une carte spécifique
-                            let clickHandler = (event) => {
-                                res[players[i]][features[j]] = event.currentTarget.id;
-                                imgSrc = event.currentTarget.src;
-                                console.log(`${players[i]} a joué la carte ${event.currentTarget.id} pour la fonctionnalité ${features[j]}`);
-                                resolve(); // Résoudre la Promise une fois que le clic a eu lieu
-                            };
-    
-                            // Ajouter un seul écouteur d'événements à chaque carte
-                            cardsArray.forEach(card => {
-                                card.addEventListener('click', clickHandler);
-                            });
-                        });
-                    };
-    
-                    // Attendre que le joueur clique sur une carte
-                    await waitForCardClick();
-                }
-                this.initPlayersChoice(players[i], imgSrc);
-            }
+    allFeaturesChecked(features, checkedFeatures){
+        let allChecked = true;
+        for(let i=0; i < features.length; i++){
+            allChecked = features[i] != checkedFeatures[i] ? false : allChecked
+        }
+        return allChecked;
+    }
+
+    showResult(res){
+        console.log(`partie terminée !  voici les resultat : `);
+        for(let i = 0; i < res.length; i++){
+            console.log(res[i]);
         }
     }
-    
-
-    
 }

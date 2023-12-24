@@ -17,7 +17,6 @@ class GameWidget {
         let selectedDifficulty = document.querySelector(".selectDifficulty").selectedIndex = null ? "strict" : document.querySelector(".selectDifficulty").value;
         this.difficultyChoice.addEventListener("change", (event) => {
             selectedDifficulty = event.target.value;
-            console.log(selectedDifficulty);
         });        
 
         this.btPlay = Object.assign(document.createElement("button"), {
@@ -80,12 +79,10 @@ class GameWidget {
         const playerNames = Array.from(inputs).map((input) => input.value);
         for(let i=0; i<playerNames.length; i++){
             if(playerNames[i] == "" || playerNames[i] == null){
-                console.log("Veuillez entrer un nom pour chaque joueur");
                 allPlayersNamed = false;
             }
         }
         if (allPlayersNamed){
-            console.log("Tous les joueurs ont un nom, lancement de la partie");
             const game = new Game(playerNames, selectedDifficulty, this.rulesWidget, this);
             this.delete();
             this.rulesWidget.delete();
