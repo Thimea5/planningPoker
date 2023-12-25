@@ -27,6 +27,7 @@
             <div id="actualFeature"></div>
             <div id="players"></div>
             <div id='actualPlayer'></div>
+            <div id="restartFeature"></div>
             <div id="cards">
                 <img id="card0" class="card" src="./img/cartes_0.svg" alt="0">
                 <img id="card1" class="card" src="./img/cartes_1.svg" alt="1">

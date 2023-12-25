@@ -8,7 +8,7 @@ class Game {
         this.players = players;
         this.difficulty = difficulty;
         this.projectName = document.querySelector('#projectName');
-        this.features = [];
+        this.features = {};
         this.startBt = document.querySelector('#startBt');
         this.infoStart = document.querySelector('#infoStart');
         this.showPlayers = document.querySelector('#playersList'); 
@@ -19,11 +19,9 @@ class Game {
         this.cards = document.querySelector('#cards');
         this.divActualFeature = document.querySelector('#actualFeature');
         this.actualFeature = "";
-        this.checkedFeatures = [];
         this.imgSrc = "";
         this.currentPlayer = "";
-        this.divPlayer = document.querySelectorAll('#players div');
-
+        this.divPlayer = [];
     }
 
     // Affichage et gestion des fonctions
@@ -87,41 +85,66 @@ class Game {
         this.cards.style.display = 'flex';
         this.startBt.style.display = 'none';
         this.divPlayers.style.display = 'flex';
+        this.divPlayer = document.querySelectorAll('#players div');
     
-        for (let j = 0; j < this.features.length; j++) {
-            this.actualFeature = this.features[j];
-            this.divActualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.actualFeature;
-            this.resetPlayersChoice();
-    
-            await this.playForFeature();
-        }
-    
-        // Après la fin de toutes les fonctionnalités, vous pouvez afficher les résultats ou effectuer d'autres opérations ici.
-        console.log(this.res);
-      }
-
-    async playForFeature() {
-        for (let i = 0; i < this.players.length; i++) {
-            this.currentPlayer = this.players[i];
-        
-            // Vérifier si this.res[this.currentPlayer] est défini
-            if (!this.res[this.currentPlayer]) {
-            this.res[this.currentPlayer] = {};
+        for (let feature in this.features) {
+            if (this.features.hasOwnProperty(feature) && !this.features[feature]) {
+                this.actualFeature = feature;
+                this.divActualFeature.innerHTML = 'Fonctionnalité actuelle : ' + this.actualFeature;
+                
+                this.resetPlayersChoice();
+                await this.playForFeature();
             }
-        
-            // Vérifier si this.res[this.currentPlayer][this.actualFeature] est défini
-            if (
-            this.res[this.currentPlayer][this.actualFeature] === undefined ||
-            this.res[this.currentPlayer][this.actualFeature] === null ||
-            this.res[this.currentPlayer][this.actualFeature] === ""
-            ) {
-            await this.playerRound();
-            console.log(this.res);
-            }
-        
-            this.initPlayersChoice();
         }
     }
+
+    async playForFeature() {
+        let allPlayersSameCard = false;
+    
+        while (!allPlayersSameCard) {
+            // Réinitialiser les résultats du tour précédent
+            this.res = {};
+    
+            for (let i = 0; i < this.players.length; i++) {
+                this.currentPlayer = this.players[i];
+    
+                if (!this.res[this.currentPlayer]) {
+                    this.res[this.currentPlayer] = {};
+                }
+    
+                if (
+                    this.res[this.currentPlayer][this.actualFeature] === undefined ||
+                    this.res[this.currentPlayer][this.actualFeature] === null ||
+                    this.res[this.currentPlayer][this.actualFeature] === ""
+                ) {
+                    await this.playerRound();
+                    console.log(this.res);
+                }
+    
+                this.initPlayersChoice();
+            }
+    
+            // Si la fonctionnalité n'est pas encore dans le dictionnaire, l'initialiser à true
+            if (!this.features.hasOwnProperty(this.actualFeature)) {
+                this.features[this.actualFeature] = true;
+            }
+    
+            // Vérifier si toutes les cartes sont les mêmes
+            allPlayersSameCard = this.players.every(player =>
+                this.res[player][this.actualFeature] === this.res[this.players[0]][this.actualFeature]
+            );
+    
+            // Si toutes les cartes sont les mêmes, marquer la fonctionnalité comme true
+            if (allPlayersSameCard) {
+                this.features[this.actualFeature] = true;
+                console.log(` ${this.actualFeature} true`);
+            } else {
+                this.features[this.actualFeature] = false;
+                console.log(`${this.actualFeature} false`);
+            }
+        }
+    }
+    
 
     renameProject() {
         this.projectName.innerHTML = prompt('Comment voulez-vous nommer votre projet ?');
@@ -129,19 +152,24 @@ class Game {
 
     // Permet d'afficher la liste des features
     initFeaturesList() {
-        if (this.features.length !== 0) {
+        if (Object.keys(this.features).length !== 0) {
             this.startBt.style.display = 'block';
             this.infoStart.style.display = 'none';
         }
+
         this.featuresList = document.querySelector("#featuresList");
         while (this.featuresList.firstChild) {
             this.featuresList.removeChild(this.featuresList.firstChild);
         }
-        for (let i = 0; i < this.features.length; i++) {
-            this.featureItem = document.createElement('li');
-            this.featureItem.textContent = this.features[i];
-            this.featuresList.appendChild(this.featureItem);
+
+        for (let feature in this.features) {
+            if (this.features.hasOwnProperty(feature)) {
+                this.featureItem = document.createElement('li');
+                this.featureItem.textContent = feature;
+                this.featuresList.appendChild(this.featureItem);
+            }
         }
+
         this.newFeature = document.createElement('li');
         this.newFeature.textContent = "Ajouter une fonctionnalité";
         this.newFeature.classList.add('addFeature');
@@ -157,7 +185,7 @@ class Game {
                 alert("Veuillez entrer un nom de fonctionnalité valide");
             }
         }
-        this.features.push(newFeature);
+        this.features[newFeature] = false;
         this.initFeaturesList();
     }
 
@@ -168,10 +196,12 @@ class Game {
     }
 
     resetPlayersChoice() {
-        console.log('on entre bien dans resetPlayersChoice');
+        console.log("voici divPlayers : ");
+        console.log(this.divPlayer);
         this.divPlayer.forEach(div => {
-            let img = div.querySelector('img');
-            img.src = "";
+            console.log('je suis dans la boucle de diplayer');
+            div.querySelector('img').src = "";
+            console.log(+div);
         });
     }
 
