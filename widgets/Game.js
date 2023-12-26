@@ -22,11 +22,16 @@ class Game {
         this.divPlayer = [];
         this.restartFeatureInfo = document.querySelector('#restartFeature');
         this.btRestartFeature = document.querySelector('#btRestartFeature');
+        this.resultat = document.querySelector('#resultat');
     }
 
 
     // Fonction pour charger une partie à partir du stockage local
     resume(nplayers, nfeature,nres, ndifficulty, nname) {
+        let rulesWidget = document.querySelector('.containerRulesWidget');
+        let gameWidget = document.querySelector('.containerGameWidget');
+        rulesWidget.style.display = 'none';
+        gameWidget.style.display = 'none';
         this.projectName.innerHTML = nname;
         this.players = nplayers;
         this.features = nfeature;
@@ -121,14 +126,6 @@ class Game {
             this.showResult(this.res);
             this.saveResToJson();
             
-            // Vous pouvez également ajouter ici d'autres actions à effectuer à la fin de la partie
-
-            // Exemple: Afficher un message de fin de partie
-            console.log("Partie terminée !");
-
-            // Exemple: Afficher les fonctionnalités vérifiées
-            console.log("Fonctionnalités vérifiées:");
-            featuresArray.forEach(feature => console.log(`${feature}: ${this.features[feature]}`));
         }
     }
 
@@ -259,9 +256,11 @@ class Game {
     }
 
     showResult(res){
+        this.board.style.display = 'none';
+        this.resultat.style.display = 'flex';
         console.log(`partie terminée !  voici les resultat : `);
-        for(let i = 0; i < res.length; i++){
-            console.log(res[i]);
+        for (let feature in this.features) {
+            console.log(feature + ' : ' + res[players[0]][feature]);
         }
     }
 

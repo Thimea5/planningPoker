@@ -46,6 +46,10 @@
         <button id="playOldGame">Reprendre la partie</button>
         <button id="resetGameList">Supprimer toutes les parties</button>
     </div>
+
+    <div id="resultat">
+        <p>Toutes les Fonctionnalités ont été traitées, voici le résultat de la partie !  <div id="showResult"></div></p>
+    </div>
 </div>
 
 <script>
