@@ -83,7 +83,7 @@ class GameWidget {
             }
         }
         if (allPlayersNamed){
-            const game = new Game(playerNames, selectedDifficulty, this.rulesWidget, this);
+            const game = new Game(playerNames, selectedDifficulty);
             this.delete();
             this.rulesWidget.delete();
             game.start();

@@ -1,13 +1,5 @@
 <h1 class="title">Planning Poker</h1> 
 <div id='startContainer'>
-<script>
-    let myRulesWidget = new RulesWidget();
-    let myGameWidget = new GameWidget(myRulesWidget);
-</script>
-    <div id="searchGame" class="block">
-        <h2>Reprendre une partie</h2>
-    </div>
-
     <div id='game'>
         <div id="gameParameters">
             <h2 id='projectName'>Projet (double clic pour modifier)</h2>
@@ -27,7 +19,10 @@
             <div id="actualFeature"></div>
             <div id="players"></div>
             <div id='actualPlayer'></div>
-            <div id="restartFeature"></div>
+            <div id="restartFeature">
+                <p>Les joueurs doivent trouver une entente ! Discutez entre vous.</p>
+                <button id="btRestartFeature" class=''>Recommencer</button>
+            </div>
             <div id="cards">
                 <img id="card0" class="card" src="./img/cartes_0.svg" alt="0">
                 <img id="card1" class="card" src="./img/cartes_1.svg" alt="1">
@@ -44,4 +39,20 @@
             </div>
         </div>
     </div>
+
+    <div id="searchGame" class="block">
+        <h2>Reprendre une partie</h2>
+        <select id="gameList"></select>
+        <button id="playOldGame">Reprendre la partie</button>
+        <button id="resetGameList">Supprimer toutes les parties</button>
+    </div>
 </div>
+
+<script>
+        let myRulesWidget = new RulesWidget();
+        let myGameWidget = new GameWidget(myRulesWidget);
+        let mySearchWidget = new SearchWidget();
+        mySearchWidget.searchGame();
+    </script>
+
+

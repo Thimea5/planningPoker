@@ -1,10 +1,8 @@
 class Game {
-    constructor(players, difficulty, rulesWidget, gameWidget) {
+    constructor(players="", difficulty="") {
         this.startContainer = document.querySelector('#startContainer');
         this.gameContainer = document.querySelector('#game');
         this.searchContainer = document.querySelector('#searchGame');
-        this.rulesWidget = rulesWidget;
-        this.gameWidget = gameWidget;
         this.players = players;
         this.difficulty = difficulty;
         this.projectName = document.querySelector('#projectName');
@@ -22,6 +20,19 @@ class Game {
         this.imgSrc = "";
         this.currentPlayer = "";
         this.divPlayer = [];
+        this.restartFeatureInfo = document.querySelector('#restartFeature');
+        this.btRestartFeature = document.querySelector('#btRestartFeature');
+    }
+
+
+    // Fonction pour charger une partie à partir du stockage local
+    resume(nplayers, nfeature,nres, ndifficulty, nname) {
+        this.projectName.innerHTML = nname;
+        this.players = nplayers;
+        this.features = nfeature;
+        this.res = nres;
+        this.difficulty = ndifficulty;
+        this.start();
     }
 
     // Affichage et gestion des fonctions
@@ -98,26 +109,59 @@ class Game {
         }
     }
 
+    checkFeaturesAndShowResult() {
+        const featuresArray = Object.keys(this.features);
+
+        // Vérifier si toutes les fonctionnalités sont à true
+        const allFeaturesTrue = featuresArray.every(feature => this.features[feature]);
+
+
+        if (allFeaturesTrue) {
+            // Afficher les résultats
+            this.showResult(this.res);
+            this.saveResToJson();
+            
+            // Vous pouvez également ajouter ici d'autres actions à effectuer à la fin de la partie
+
+            // Exemple: Afficher un message de fin de partie
+            console.log("Partie terminée !");
+
+            // Exemple: Afficher les fonctionnalités vérifiées
+            console.log("Fonctionnalités vérifiées:");
+            featuresArray.forEach(feature => console.log(`${feature}: ${this.features[feature]}`));
+        }
+    }
+
     async playForFeature() {
         let allPlayersSameCard = false;
     
         while (!allPlayersSameCard) {
             // Réinitialiser les résultats du tour précédent
-            this.res = {};
+            //this.res = {};
+
     
             for (let i = 0; i < this.players.length; i++) {
                 this.currentPlayer = this.players[i];
     
+                // Si le joueur n'a pas encore de dictionnaire de résultats, l'initialiser
                 if (!this.res[this.currentPlayer]) {
                     this.res[this.currentPlayer] = {};
                 }
-    
+
+
+                // Réinitialiser la fonctionnalité actuelle pour chaque joueur
+                this.res[this.currentPlayer][this.actualFeature] = null;
+                console.log('this.res AVANT reinitialisation pour chaque joueur');
+                console.log(this.res);
+
                 if (
                     this.res[this.currentPlayer][this.actualFeature] === undefined ||
                     this.res[this.currentPlayer][this.actualFeature] === null ||
                     this.res[this.currentPlayer][this.actualFeature] === ""
                 ) {
                     await this.playerRound();
+                    //console.log(this.res);
+                    console.log('this.res après la selection de carte');
                     console.log(this.res);
                 }
     
@@ -137,14 +181,19 @@ class Game {
             // Si toutes les cartes sont les mêmes, marquer la fonctionnalité comme true
             if (allPlayersSameCard) {
                 this.features[this.actualFeature] = true;
-                console.log(` ${this.actualFeature} true`);
+                this.checkFeaturesAndShowResult();
             } else {
                 this.features[this.actualFeature] = false;
-                console.log(`${this.actualFeature} false`);
+                this.restartFeatureInfo.style.display = "flex";
+            
+                this.btRestartFeature.addEventListener('click', () => {
+                    this.restartFeatureInfo.style.display = "none";
+                    this.resetPlayersChoice();
+                });
             }
         }
     }
-    
+        
 
     renameProject() {
         this.projectName.innerHTML = prompt('Comment voulez-vous nommer votre projet ?');
@@ -196,12 +245,8 @@ class Game {
     }
 
     resetPlayersChoice() {
-        console.log("voici divPlayers : ");
-        console.log(this.divPlayer);
         this.divPlayer.forEach(div => {
-            console.log('je suis dans la boucle de diplayer');
             div.querySelector('img').src = "";
-            console.log(+div);
         });
     }
 
@@ -218,5 +263,21 @@ class Game {
         for(let i = 0; i < res.length; i++){
             console.log(res[i]);
         }
+    }
+
+    // Fonction pour enregistrer les résultats dans le stockage local
+    saveResToJson() {
+        const gameData = {
+            name: this.projectName.textContent,
+            res: this.res,
+            features: this.features,
+            players: this.players,
+            difficulty: this.difficulty,
+        };
+
+        const gameDataJson = JSON.stringify(gameData);
+
+        // Stocker la partie avec un nom donné dans le stockage local
+        localStorage.setItem(this.projectName.textContent, gameDataJson);
     }
 }
