@@ -1,16 +1,23 @@
+//La classe Game représente le jeu principal.
+//@class
 class Game {
+    //@constructor
     constructor(players="", difficulty="") {
         this.startContainer = document.querySelector('#startContainer');
         this.gameContainer = document.querySelector('#game');
         this.searchContainer = document.querySelector('#searchGame');
+        //@param {Array} players - Liste des joueurs.
         this.players = players;
+        //@param {string} difficulty - Niveau de difficulté du jeu.
         this.difficulty = difficulty;
         this.projectName = document.querySelector('#projectName');
+        //@param {Object} features - Liste des fonctionnalités.
         this.features = {};
         this.startBt = document.querySelector('#startBt');
         this.infoStart = document.querySelector('#infoStart');
         this.showPlayers = document.querySelector('#playersList'); 
         this.divPlayers = document.querySelector('#players');
+        //@param {Object} res - Résultats des joueurs.
         this.res = {};
         this.board = document.querySelector('#boardGame');
         this.actualPlayer = document.querySelector('#actualPlayer');
@@ -27,17 +34,37 @@ class Game {
 
 
     // Fonction pour charger une partie à partir du stockage local
-    resume(nplayers, nfeature,nres, ndifficulty, nname) {
-        let rulesWidget = document.querySelector('.containerRulesWidget');
-        let gameWidget = document.querySelector('.containerGameWidget');
-        rulesWidget.style.display = 'none';
-        gameWidget.style.display = 'none';
-        this.projectName.innerHTML = nname;
-        this.players = nplayers;
-        this.features = nfeature;
-        this.res = nres;
-        this.difficulty = ndifficulty;
-        this.start();
+    resume(nplayers, nfeature, nres, ndifficulty, nname) {
+        try {
+            let rulesWidget = document.querySelector('.containerRulesWidget');
+            let gameWidget = document.querySelector('.containerGameWidget');
+            rulesWidget.style.display = 'none';
+            gameWidget.style.display = 'none';
+
+            // Ajout des tests sur les valeurs passées
+            if (!nname || !nplayers || !ndifficulty) {
+                throw new Error("Paramètres manquants");
+            }
+
+            this.projectName.innerHTML = nname;
+            this.players = nplayers;
+            this.features = nfeature;
+            this.res = nres;
+            this.difficulty = ndifficulty;
+
+            let featuresArray = Object.keys(this.features);
+            let allFeaturesTrue = featuresArray.every(feature => this.features[feature]);
+
+            if (allFeaturesTrue) {
+                // Afficher les résultats
+                this.start();
+                this.showResult();
+            } else {
+                this.start();
+            }
+        } catch (error) {
+            console.error("Erreur lors de la reprise de la partie:", error);
+        }
     }
 
     // Affichage et gestion des fonctions
@@ -123,7 +150,7 @@ class Game {
 
         if (allFeaturesTrue) {
             // Afficher les résultats
-            this.showResult(this.res);
+            this.showResult();
             this.saveResToJson();
             
         }
@@ -177,8 +204,14 @@ class Game {
     
             // Si toutes les cartes sont les mêmes, marquer la fonctionnalité comme true
             if (allPlayersSameCard) {
-                this.features[this.actualFeature] = true;
-                this.checkFeaturesAndShowResult();
+                if(this.res[this.players[0]][this.actualFeature] === 'cardCoffee'){
+                    this.features[this.actualFeature] = false;
+                    this.saveResToJson();
+                }
+                else {
+                    this.features[this.actualFeature] = true;
+                    this.checkFeaturesAndShowResult()
+                }
             } else {
                 this.features[this.actualFeature] = false;
                 this.restartFeatureInfo.style.display = "flex";
@@ -255,17 +288,60 @@ class Game {
         return allChecked;
     }
 
-    showResult(res){
+    showResult(){
         this.board.style.display = 'none';
-        this.resultat.style.display = 'flex';
-        console.log(`partie terminée !  voici les resultat : `);
-        for (let feature in this.features) {
-            console.log(feature + ' : ' + res[players[0]][feature]);
+        this.resultat.style.display = 'block';
+        
+        for(let feature in this.features){
+                let div = document.createElement('div');
+                let img = document.createElement('img');
+                div.textContent = `${feature}:`;
+
+                switch(this.res[this.players[0]][feature]){
+                    case 'card0':
+                        img.src = 'img/cartes_0.svg';
+                        break;
+                    case 'card1':
+                        img.src = 'img/cartes_1.svg';
+                        break;
+                    case 'card2':
+                        img.src = 'img/cartes_2.svg';
+                        break;
+                    case 'card3':
+                        img.src = 'img/cartes_3.svg';
+                        break;
+                    case 'card5':
+                        img.src = 'img/cartes_5.svg';
+                        break;
+                    case 'card8':
+                        img.src = 'img/cartes_8.svg';
+                        break;
+                    case 'card13':
+                        img.src = 'img/cartes_13.svg';
+                        break;
+                    case 'card20':
+                        img.src = 'img/cartes_20.svg';
+                        break;
+                    case 'card40':
+                        img.src = 'img/cartes_40.svg';
+                        break;
+                    case 'card100':
+                        img.src = 'img/cartes_100.svg';
+                        break;
+                    case 'cardQuestion':
+                        img.src = 'img/cartes_interro.svg';
+                        break;
+                    case 'cardCoffee':
+                        img.src = 'img/cartes_cafe.svg';
+                        break;
+                }
+                div.appendChild(img);
+                this.resultat.appendChild(div);
         }
     }
 
     // Fonction pour enregistrer les résultats dans le stockage local
-    saveResToJson() {
+    saveResToJson(){
         const gameData = {
             name: this.projectName.textContent,
             res: this.res,
@@ -280,3 +356,24 @@ class Game {
         localStorage.setItem(this.projectName.textContent, gameDataJson);
     }
 }
+
+// Singleton implementation
+const gameInstance = (function() {
+    let instance = null;
+
+    function createInstance(players, difficulty) {
+        return new Game(players, difficulty);
+    }
+
+    return {
+        getInstance: function(players, difficulty) {
+            if (!instance) {
+                instance = createInstance(players, difficulty);
+            }
+            return instance;
+        }
+    };
+})();
+
+
+module.exports = Game;

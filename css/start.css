@@ -192,6 +192,19 @@
 #resultat {
     display: none;
 }
+
+#resultat > div {
+    margin: 10px;
+    padding: 10px;
+    background: lightgray;
+    border-radius: 5px;
+}
+
+#resultat > div > img {
+    height: 50px;
+    margin: auto;
+    display: inline;
+}
 /* Cartes */
 
 #cards {
